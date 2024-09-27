@@ -51,13 +51,17 @@ header{
   transition: 0.3s;
 }
 
-.close{
+.close, .edit{
   position:absolute;
   background: none;
   border: none;
   cursor: pointer;
   top: 10px;
   right: 20px;
+}
+
+.edit{
+  right: 40px;
 }
 
 .feedback-summary{
@@ -171,6 +175,27 @@ input:focus{
   padding-top: 10px;
   text-align: center;
   color: rebeccapurple;
+}
+
+.about-link{
+  display: flex;
+  justify-content: flex-end;
+}
+
+.about-link a{
+  color: #fff;
+}
+
+.about-link a:hover{
+  color: #ff6a95;
+}
+
+.about h1{
+  margin-bottom: 20px;
+}
+
+.about p{
+  margin: 10px 0;
 }
 
 @media (max-width: 600px){
