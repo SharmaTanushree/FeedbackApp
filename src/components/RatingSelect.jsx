@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React from 'react'
 
 function RatingSelect({select,selected}) {
 
@@ -10,7 +10,7 @@ function RatingSelect({select,selected}) {
   return (
     <ul className='rating'>
         {Array.from({length:10},(v,i)=>{
-            const ratingValue = i+1;
+            
             return(
                 <li key={`rating${i+1}`}>
                     <input 
