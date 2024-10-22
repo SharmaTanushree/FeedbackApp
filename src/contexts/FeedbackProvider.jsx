@@ -1,6 +1,5 @@
 import React from 'react';
 import { createContext, useState, useEffect } from 'react';
-import FeedbackData from '../data/feedbackData';
 import {v4 as uuidv4} from 'uuid';
 
 
@@ -8,28 +7,55 @@ export const FeedbackContext = createContext();
 export const FeedbackProvider = ({children}) =>{
   const[feedbacks, setFeedbacks] = useState();
   const[editFeedback, setEditFeedback] = useState({item: {}, edit: false});
+  const[isLoading, setIsLoading] = useState(true);
   
 
   useEffect(()=>{
-    setFeedbacks(FeedbackData)
+    getFeedbacks();
   },[])
 
-  const addFeedback = (newFeedback)=>{
-    newFeedback.id = uuidv4();
-    setFeedbacks([...feedbacks,newFeedback]);
+  const  getFeedbacks = async()=>{
+    setIsLoading(true);
+    let  data = await fetch('/feedback');
+    let res = await data.json();
+    setFeedbacks(res);
+    setIsLoading(false);
+  }
+
+  const addFeedback = async (newFeedback)=>{
+    const response = await fetch('/feedback',{
+       method: 'POST',
+       headers: {
+         'Content-Type' : 'application/json',
+         
+       },
+       body: JSON.stringify(newFeedback)
+    });
+    const data = await response.json();
+ 
+    setFeedbacks([...feedbacks,data]);
  }
 
  const deleteFeedback = (id) =>{
     if(window.confirm('Are you sure you want to delete?')){
+        fetch(`/feedback/${id}`, {method:'DELETE'});
         setFeedbacks(feedbacks.filter(item=>item.id !== id));
     }
  }
 
- const putFeedback = (id,feedback)=>{
-    setFeedbacks(feedbacks.map(item=> item.id === id ?{...item,...feedback} :item));
+ const putFeedback = async(id,feedback)=>{
+   const response = await fetch(`/feedback/${id}`,{
+     method: 'PUT',
+     headers:{
+       'Content-Type' : 'application/json'
+     },
+     body: JSON.stringify(feedback)
+   });
+   const data = await response.json();
+    setFeedbacks(feedbacks.map(item=> item.id === id ?{...item,...data} :item));
  }
 
-const setEditFeedbackItem = (item)=>{
+const setEditFeedbackItem = (item)=>{ 
       
        setEditFeedback({item, edit:true});
        
@@ -44,6 +70,7 @@ const setEditFeedbackItem = (item)=>{
         addFeedback,
         deleteFeedback,
         setEditFeedbackItem,
+        isLoading,
         editFeedback,
         putFeedback
      }}
